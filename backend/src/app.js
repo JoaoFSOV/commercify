@@ -1,23 +1,24 @@
 require('dotenv').config({ path: './src/.env' });
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 
+const authMiddlewares = require('./middlewares/auth');
 const adminRoutes = require('./routes/admin');
 const costumerRoutes = require('./routes/costumer');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 
 app.use(bodyParser.json());
+app.use(cookieParser());
 
-app.use('/', (req, res, next) => {
-	console.log("First middleware in line");
-	next();
-});
+app.use('/', authMiddlewares.authenticate);
 
-app.use('/', costumerRoutes);
 app.use('/admin', adminRoutes);
+app.use(costumerRoutes);
+app.use(authRoutes)
 
 app.use((error, req, res, next) => {
 	res.status(error.statusCode || 500).json({ message: error.message });

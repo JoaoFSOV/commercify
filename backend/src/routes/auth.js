@@ -1,11 +1,11 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
 
 const authController = require('../controllers/auth');
 const authMiddlewares = require('../middlewares/auth');
-const Blt = require('../models/blackListedToken')
 
 const router = express.Router();
+// TODO: Still need to implement getting a reset password link request
+// and a post reset password request
 
 // localhost:<port>/signup => POST
 router.post('/signup', authController.signup);

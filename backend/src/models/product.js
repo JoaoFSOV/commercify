@@ -11,12 +11,17 @@ const productSchema = new mongoose.Schema({
 	price: { type: Number, required: true, min: 0 },
 	description: { type: String, required: true },
 	type: { type: String, enum: ['tech', 'household', 'clothing', 'beauty', 'sports'], required: true},
-	//images: { type: [String], default: [] },
 	brand: { type: String, required: true },
 	stock: { type: Number, min: 0, default: 0 },
 	discount: { type: Number, default: 0, min: 0, max: 100 },
 	averageRating: { type: Number, default: 0, min: 0, max: 5 },
-	nRatings: { type: Number, default: 0, min: 0 }
+	nRatings: { type: Number, default: 0, min: 0 },
+	images: { type: [String], default: [], validate: {
+		validator: function(arr) {
+			return arr.length <= 7;
+		},
+		message: 'You can only have 7 images per product.'
+	}}
 }, { timestamps: true });
 
 exports.Product = mongoose.model('Product', productSchema);

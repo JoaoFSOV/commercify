@@ -1,4 +1,5 @@
 const { Product, Rating } = require('../models/product');
+const User = require('../models/user');
 const errorUtil = require('../util/error');
 
 // Retreives all products from the database
@@ -59,6 +60,22 @@ exports.rateProduct = async (req, res, next) => {
 
         res.status(200).json({ message: 'Rating submitted!', averageRating: avgRating });
 	} catch(err) {
+		next(errorUtil.prepError(err.message, 500));
+	}
+};
+
+exports.addToCart = async (req, res, next) => {
+	const prodId = req.params.prodId;
+	const quantity = req.body.quantity;
+	const userId = req.userId;
+
+	try {
+		const user = await User.findById(userId);
+		const product = await Product.findById(prodId);
+		await user.addToCart(product, quantity);
+		res.status(201).json({ message: 'Product added to cart!' });
+
+	}catch(err) {
 		next(errorUtil.prepError(err.message, 500));
 	}
 };

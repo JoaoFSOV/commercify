@@ -3,16 +3,17 @@ const User = require('../models/user');
 const errorUtil = require('../util/error');
 
 // Retreives all products from the database
-// TODO: Implement pagination 
 exports.getProducts = async (req, res, next) => {
+	const limit = +req.query.limit || 5;
+	const page = +req.query.page || 1;
+
 	let products = [];
 	try {
 		const amount = await Product.find().countDocuments();
+		if(amount === 0) return next(errorUtil.prepError('No products found.', 404));
 
-		if(amount > 0) products = await Product.find();
-		else next(errorUtil.prepError('No products found.', 404));
-
-		res.status(200).json({ amount: amount, products: products });
+		products = await Product.find().skip((page - 1) * limit).limit(limit);
+		res.status(200).json({ amount: limit, products: products });
 	} catch(err) {
 		next(errorUtil.prepError(err.message, 500));
 	}

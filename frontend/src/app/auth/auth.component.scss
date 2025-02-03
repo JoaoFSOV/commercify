@@ -1,0 +1,95 @@
+.container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+  height: 50%;
+  display: flex;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.26);
+  width: 50%;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.user_input, .logo{
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.user_input {
+  flex: 5;
+  align-items: center;
+  justify-content: center;
+
+  p-button {
+    //font-size: 1.2rem;
+    padding: 12px 24px;
+    //width: auto;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    color: black;
+    padding-bottom: 2rem;
+  }
+}
+
+.logo {
+  height: 100%;
+  width: 100%;
+  flex: 5;
+  background-color: var(--p-primary-color);
+  padding: 0;
+  margin: 0;
+  color: black;
+
+  /* Apply rounded corners only on the right side */
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+
+  p-button {
+    margin-top: 1rem;
+  }
+
+
+  h1, h3 {
+    margin: 0;
+    padding: 0;
+    line-height: 1.2;
+  }
+}
+
+
+.card h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+input[pInputText] {
+  width: 50%;
+  padding: 10px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.reset-link {
+  display: block;
+  margin-top: 10px;
+  color: #007bff;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+

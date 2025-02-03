@@ -1,0 +1,52 @@
+<div class="container">
+  <div class="card">
+    <div class="user_input">
+      <h2>{{ formType === 'login' ? 'Login' : formType === 'register' ? 'Register' : formType === 'forgot' ? 'Forgot Password' : 'Reset Password'}}</h2>
+
+      <input pInputText
+      [(ngModel)]="username"
+      type="text"
+      placeholder="Username"
+      *ngIf="formType === 'register'"
+      />
+
+      <input pInputText
+      [(ngModel)]="email"
+      type="email"
+      placeholder="Email"
+      *ngIf="formType !== 'reset'"
+      />
+
+      <input pInputText
+      [(ngModel)]="password"
+      type="password"
+      placeholder="Password"
+      *ngIf="formType !== 'forgot'"
+      />
+
+      <input pInputText
+      [(ngModel)]="confirmPassword"
+      type="password"
+      placeholder="Confirm Password"
+      *ngIf="formType === 'register' || formType ==='reset'"
+      />
+
+      <p-button
+        [label]="formType === 'login' ? 'Sign In' : formType === 'register' ? 'Register' : formType === 'forgot' ? 'Send email' : 'Change password'"
+        (onClick)="formType === 'login' ? login() : formType === 'register' ? register() : formType === 'forgot' ? forgot() : resetPassword()"/>
+
+      <a href="#" class="reset-link" (click)="switchForm('forgot'); $event.preventDefault()" *ngIf="formType === 'login'">Forgot your password?</a>
+      <!--
+      <a href="#" class="reset-link" (click)="switchForm('register'); $event.preventDefault()" *ngIf="formType === 'login'">Create an account</a>
+      -->
+    </div>
+
+    <div class="logo">
+      <h1>Welcome to Commercify</h1>
+      <h3>Don't have an account?</h3>
+      <p-button label="Sign Up" (onClick)="switchForm('register')" severity="contrast"/>
+    </div>
+  </div>
+</div>
+
+

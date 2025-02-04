@@ -9,7 +9,7 @@ exports.authenticate = async (req, res, next) => {
 	const token = req.cookies.jwt_token;
 
 	// Routes that should be public no matter their method
-	const publicRoutes = ['/login', '/signup'];
+	const publicRoutes = ['/login', '/signup', '/forgot', '/reset'];
 	if(publicRoutes.includes(req.path) || req.method === 'GET') {
 		return next();
 	}

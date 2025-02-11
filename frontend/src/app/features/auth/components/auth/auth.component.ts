@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DoCheck, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext'
@@ -19,13 +19,14 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.scss'
 })
-export class AuthComponent implements OnInit {
+export class AuthComponent implements OnInit, DoCheck {
   username: string = "";
   email: string = "";
   password: string = "";
   confirmPassword: string = "";
 
   formType: 'login' | 'register' | 'reset' | 'forgot' = 'login';
+  previousFormType: 'login' | 'register' | 'reset' | 'forgot' = 'login';
   token: string = "";
 
   constructor(
@@ -48,12 +49,26 @@ export class AuthComponent implements OnInit {
     })
   }
 
+  ngDoCheck(): void {
+    if (this.formType !== this.previousFormType) {
+      this.clearInputs();
+      this.previousFormType = this.formType;
+    }
+  }
+
   switchForm(type: 'login' | 'register' | 'reset' | 'forgot') {
     this.formType = type;
     this.router.navigate([], {
       queryParams: { form: type },
       queryParamsHandling: 'merge'
     });
+  }
+
+  clearInputs() {
+    this.username = "";
+    this.email = "";
+    this.password = "";
+    this.confirmPassword = "";
   }
 
   login() {

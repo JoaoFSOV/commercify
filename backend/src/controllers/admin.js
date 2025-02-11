@@ -6,7 +6,7 @@ const ROLES_ENUM = ['customer', 'admin'];
 
 // Creates a product in the database with the data on the request body
 exports.createProduct = async (req, res, next) => {
-	const { name, price, description, type, brand, stock, discount } = req.body;
+	const { name, price, description, type, brand, stock, discount, imageUrl } = req.body;
 	const product = new Product({
 		name: name,
 		price: price,
@@ -14,7 +14,8 @@ exports.createProduct = async (req, res, next) => {
 		type: type,
 		brand: brand,
 		stock: stock,
-		discount: discount
+		discount: discount,
+		imageUrl: imageUrl,
 	});
 
 	try {

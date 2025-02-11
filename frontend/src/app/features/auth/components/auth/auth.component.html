@@ -41,8 +41,11 @@
     <div class="logo">
       <h1>Welcome to Commercify</h1>
       <h3 *ngIf="formType ==='login'">Don't have an account?</h3>
-      <h3 *ngIf="formType ==='register'">Create your account!</h3>
+      <h3 *ngIf="formType ==='register'">Already have an account?</h3>
+      <h3 *ngIf="formType ==='forgot'">Get an email to reset your password!</h3>
+      <h3 *ngIf="formType ==='reset'">Reset your password!</h3>
       <p-button label="Sign Up" (onClick)="switchForm('register')" severity="contrast" *ngIf="formType ==='login'"/>
+      <p-button label="Sign In" (onClick)="switchForm('login')" severity="contrast" *ngIf="formType ==='register'"/>
     </div>
   </div>
 </div>

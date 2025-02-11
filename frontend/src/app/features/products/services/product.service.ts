@@ -13,4 +13,8 @@ export class ProductService {
   getProducts(): Observable<any> {
     return this.http.get(`${this.apiUrl}/products`);
   }
+
+  getProduct(slug: String): Observable<any> {
+    return this.http.get(`${this.apiUrl}/product/${slug}`);
+  }
 }

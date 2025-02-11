@@ -1,0 +1,15 @@
+<a [routerLink]="['/product', product.slug]" class="product-card-link">
+  <p-card *ngIf="product" class="product-card">
+    <ng-template pTemplate="body">
+      <img class="product-image" [src]="product.imageUrl" alt="{{ product.name }}" />
+      <div class="product-header">
+        <h3 class="price">Price: ${{ product.finalPrice }}</h3>
+        <h2 class="product-name">{{ product.name }}</h2>
+        <div class="rating-container">
+          <p-rating [ngModel]="product.averageRating" [readonly]="true" stars="5" cancel="false"></p-rating>
+          <span class="rating-count">({{ product.nRatings }})</span>
+        </div>
+      </div>
+    </ng-template>
+  </p-card>
+</a>

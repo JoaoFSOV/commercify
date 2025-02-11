@@ -1,11 +1,16 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
-import { ProductService } from '../../../products/services/product.service';
+import { ProductService } from '../../products/services/product.service';
+import { ProductComponent } from '../../products/components/product/product.component';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [],
+  imports: [
+    CommonModule,
+    ProductComponent
+  ],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.scss'
 })
@@ -25,6 +30,8 @@ export class ProductListComponent implements OnInit{
     this.productService.getProducts().subscribe({
       next: (response) => {
         console.log("Here are the products: ", response);
+        this.products = response.products;
+        console.log(this.products);
       },
       error: (error) => {
         console.error("Error fetching products: ", error);
@@ -32,3 +39,4 @@ export class ProductListComponent implements OnInit{
     });
   }
 }
+

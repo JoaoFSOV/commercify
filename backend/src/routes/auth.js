@@ -11,6 +11,9 @@ router.post('/signup', authController.signup);
 // localhost:<port>/login => POST
 router.post('/login', authController.login);
 
+// localhost:<port>/me => GET
+router.get('/me', authController.getMe);
+
 // localhost:<port>/logout => POST
 router.post('/logout', authController.logout, authMiddlewares.cleanBlackListedTokens);
 

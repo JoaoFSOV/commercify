@@ -70,6 +70,19 @@ exports.login = async (req, res, next) => {
 	}
 };
 
+// Get current logged in user info
+exports.getMe = async (req, res, next) => {
+	const userId = req.userId;
+	try {
+		const user = await User.findById(userId).select('_id name email role');
+		if(!user) return next(errorUtil.prepError(`User not found.`, 404));
+
+		res.status(200).json({ user: { id: user._id, name: user.name, email: user.email, isAdmin: user.role === 'admin' } });
+	} catch(err) {
+		next(errorUtil.prepError(err.message, 500));
+	}
+};
+
 // Saves the token in the database to be handled as blacklisted and removes it from cookie
 exports.logout = async (req, res, next) => {
 	const token = req.cookies.jwt_token;				

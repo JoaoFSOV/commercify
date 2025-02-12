@@ -11,7 +11,7 @@ exports.authenticate = async (req, res, next) => {
 	// Routes that should be public no matter their method
 	const publicRoutes = ['/login', '/signup', '/forgot', '/reset'];
 	if(publicRoutes.includes(req.path) || req.method === 'GET') {
-		return next();
+		if(req.path !== '/me') return next();
 	}
 
 	if(!token) return next(errorUtil.prepError('Authorization required.', 401));

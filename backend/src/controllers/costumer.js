@@ -3,28 +3,29 @@ const User = require('../models/user');
 const errorUtil = require('../util/error');
 
 // Retreives all products from the database
-// TODO: Implement pagination 
 exports.getProducts = async (req, res, next) => {
+	const limit = +req.query.limit || 5;
+	const page = +req.query.page || 1;
+
 	let products = [];
 	try {
 		const amount = await Product.find().countDocuments();
+		if(amount === 0) return next(errorUtil.prepError('No products found.', 404));
 
-		if(amount > 0) products = await Product.find();
-		else next(errorUtil.prepError('No products found.', 404));
-
-		res.status(200).json({ amount: amount, products: products });
+		products = await Product.find().skip((page - 1) * limit).limit(limit);
+		res.status(200).json({ amount: limit, products: products });
 	} catch(err) {
 		next(errorUtil.prepError(err.message, 500));
 	}
 };
 
-// Retreives a product from the database with the id received in the request params
+// Retreives a product from the database with the slug received in the request params
 exports.getProduct = async (req, res, next) => {
-	const prodId = req.params.prodId;
+	const slug = req.params.slug;
 
 	try {
-		const product = await Product.findOne({_id: prodId});
-		if(product == null) return next(errorUtil.prepError(`No product found with id = ${prodId}`, 404));
+		const product = await Product.findOne({slug: slug});
+		if(product == null) return next(errorUtil.prepError(`No product found with slug = ${slug}`, 404));
 
 		res.status(200).json({ product: product });
 	} catch(err) {

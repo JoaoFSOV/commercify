@@ -1,0 +1,12 @@
+.product-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background-color: red;
+}
+
+app-product {
+  width: 300px;
+}
+
+

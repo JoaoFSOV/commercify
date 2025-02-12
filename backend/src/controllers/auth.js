@@ -8,6 +8,7 @@ const Blt = require('../models/blackListedToken');
 const errorUtil = require('../util/error');
 
 const isProduction = process.env.NODE_ENV === 'production'
+
 // Dev only, for production check their Email API/SMTP
 var transport = nodemailer.createTransport({
   host: "sandbox.smtp.mailtrap.io",

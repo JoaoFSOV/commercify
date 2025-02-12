@@ -82,7 +82,6 @@ FRONTEND_URL: URL for redirecting after password reset (/reset/<token>)
 "scripts": {
     "start": "APP_PORT=your_port MONGO_URI=your_mongo_uri JWT_SECRET=your_secret NODE_ENV=your_env EMAIL_SENDER=your_email FRONTEND_URL=your_frontend_url node app.js"
 }
-
 ```
 
 ## Scripts to run the app

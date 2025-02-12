@@ -72,12 +72,12 @@ Configure the following environment variables either in a `.env` file or by addi
 
 ### Using a `.env` file in the root folder:
 
-APP_PORT=your_port
-MONGO_URI=your_mongo_uri
-JWT_SECRET=your_secret
-NODE_ENV=your_env  # production or development
-EMAIL_SENDER=your_email
-FRONTEND_URL=your_frontend_url
+- APP_PORT=your_port
+- MONGO_URI=your_mongo_uri
+- JWT_SECRET=your_secret
+- NODE_ENV=your_env  # production or development
+- EMAIL_SENDER=your_email
+- FRONTEND_URL=your_frontend_url
 
 ### Or adding them to the start script in `package.json`:
 

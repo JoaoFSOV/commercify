@@ -54,7 +54,6 @@ The project includes authentication, role-based access control, and basic shoppi
 ```
 git clone https://github.com/your-username/commercify.git
 cd commercify
-
 ```
 
 ## Extra

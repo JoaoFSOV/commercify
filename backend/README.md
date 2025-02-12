@@ -66,7 +66,6 @@ From inside the `backend` folder, run:
 
 ```npm install```
 
-
 ## Set up Environment Variables
 
 Configure the following environment variables either in a `.env` file or by adding them to the start script in `package.json`:

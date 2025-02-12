@@ -89,5 +89,6 @@ Configure the following environment variables either in a `.env` file or by addi
 
 ## Scripts to run the app
 ```npm start```         # Starts the app (same as `node app.js`)
+
 ```npm run start:dev``` # Uses nodemon for development
 

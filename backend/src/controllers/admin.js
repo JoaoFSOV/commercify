@@ -22,7 +22,7 @@ exports.createProduct = async (req, res, next) => {
 		const result = await product.save();
 		res.status(201).json({ message: 'Product saved!', product: result });
 	} catch(err) {
-		next(errorUtil.prepError(err.message, 500));
+		next(errorUtil.prepError(err.message, err.statusCode));
 	}
 };
 
@@ -47,7 +47,7 @@ exports.editProduct = async (req, res, next) => {
 		const result = await product.save();
 		res.status(200).json({ message: 'Product updated!', product: result });
 	} catch(err) {
-		next(errorUtil.prepError(err.message, 500));
+		next(errorUtil.prepError(err.message, err.statusCode));
 	}
 };
 
@@ -61,7 +61,7 @@ exports.deleteProduct = async (req, res, next) => {
 
 		res.status(200).json({ message: 'Product deleted' });
 	} catch(err) {
-		next(errorUtil.prepError(err.message, 500));
+		next(errorUtil.prepError(err.message, err.statusCode));
 	}
 };
 
@@ -74,6 +74,7 @@ exports.promote = async (req, res, next) => {
 		if(!user) return next(errorUtil.prepError(`No user found with id = ${userId}.`, 404))
 
 		const roleIndex = ROLES_ENUM.findIndex(r => r === user.role);
+		// if not the greatest role in the array, promote it
 		if(roleIndex < ROLES_ENUM.length - 1){
 			user.role = ROLES_ENUM[roleIndex + 1];
 			await user.save();
@@ -82,7 +83,7 @@ exports.promote = async (req, res, next) => {
 
 		return next(errorUtil.prepError("Can't promote that user anymore.", 400));
 	}catch(err) {
-		next(errorUtil.prepError(err.message, 500));
+		next(errorUtil.prepError(err.message, err.statusCode));
 	}
 };
 

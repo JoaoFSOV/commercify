@@ -29,6 +29,7 @@ const productSchema = new mongoose.Schema({
 	//}}
 }, { timestamps: true });
 
+// Applies the discount to the price 
 productSchema.virtual('finalPrice').get(function () {
 	return parseFloat(this.price * (1 - this.discount / 100)).toFixed(2);
 });
@@ -51,8 +52,7 @@ productSchema.pre('save', async function(next) {
 		}
 		next();
 	} catch (err) {
-		console.error('Error generating slug:', err);
-		next(err); // Pass the error to the next middleware or handler
+		throw errorUtil.prepError(err.message, 500);
 	}
 });
 

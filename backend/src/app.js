@@ -12,15 +12,18 @@ const authRoutes = require('./routes/auth');
 
 const app = express();
 
-app.use(bodyParser.json());
-app.use(cookieParser());
+app.use(bodyParser.json()); // Allow us to parse the json body of each request
+app.use(cookieParser()); // To allow us to read cookie values (token)
 
+// Middleware to validate token sent in cookies, aply basic authorization and set userId
 app.use(authMiddlewares.authenticate);
 
+// All route handling middlewares
 app.use('/admin', adminRoutes);
 app.use(costumerRoutes);
 app.use(authRoutes);
 
+// Middleware to handle every error
 app.use(errorMiddlewares.defaultErrorHandler);
 
 mongoose

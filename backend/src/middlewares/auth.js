@@ -8,12 +8,15 @@ const errorUtil = require('../util/error');
 exports.authenticate = async (req, res, next) => {
 	const token = req.cookies.jwt_token;
 
-	// Routes that should be public no matter their method
+	// !Get method routes that should be public to non authenticated user
 	const publicRoutes = ['/login', '/signup', '/forgot', '/reset'];
-	if(publicRoutes.includes(req.path) || req.method === 'GET') {
-		if(req.path !== '/me') return next();
+	// Get routes that should require authentication
+	const privateGetRoutes = ['/me', '/cart'];
+	if(publicRoutes.includes(req.path) || (req.method === 'GET' && !privateGetRoutes.includes(req.path))) {
+		return next();
 	}
 
+	// User non authenticated, should not have access
 	if(!token) return next(errorUtil.prepError('Authorization required.', 401));
 
 	try {
@@ -45,6 +48,7 @@ exports.isAdmin = async (req, res, next) => {
 	const user = await User.findOne({ _id: req.userId });
 	req.isAdmin = (user.role === 'admin');
 
+	// Only admin users should have access
 	if(!req.isAdmin) return next(errorUtil.prepError('Not authorized', 401));
 	next();
 };

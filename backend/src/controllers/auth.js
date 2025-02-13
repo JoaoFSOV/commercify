@@ -38,11 +38,10 @@ exports.signup = async (req, res, next) => {
 		await newUser.save();
 		res.status(201).json({ message: 'Signup successfull!' });
 	} catch(err) {
-		next(errorUtil.prepError(err.message, 500));
+		next(errorUtil.prepError(err.message, err.statusCode));
 	}
 };
 
-// Verifies password and creates a jwt and sets it in a secure cookie called jwt_token
 exports.login = async (req, res, next) => {
 	const email = req.body.email;
 
@@ -53,11 +52,12 @@ exports.login = async (req, res, next) => {
 		const isEqual = await bcrypt.compare(req.body.password, user.password);
 		if(!isEqual) return next(errorUtil.prepError('Wrong credentials.', 401));
 
+		// Creates the jwt token
 		const jwtToken = jwt.sign({ 
 			userId: user._id.toString(),
-			jId: crypto.randomUUID().toString()
 		}, process.env.JWT_SECRET, { expiresIn: '1h'});
 
+		// Writes it into a secure cookie called jwt_token to be sent with every request
 		res.cookie('jwt_token', jwtToken, {
 			httpOnly: true,       // Cannot be access via JS
 			secure: isProduction, // Only sent over HTTPS
@@ -67,7 +67,7 @@ exports.login = async (req, res, next) => {
 
 		res.status(200).json({ message: 'Login successfull.' });
 	}catch (err) {
-		next(errorUtil.prepError(err.message, 500));
+		next(errorUtil.prepError(err.message, err.statusCode));
 	}
 };
 
@@ -80,15 +80,16 @@ exports.getMe = async (req, res, next) => {
 
 		res.status(200).json({ user: { id: user._id, name: user.name, email: user.email, isAdmin: user.role === 'admin' } });
 	} catch(err) {
-		next(errorUtil.prepError(err.message, 500));
+		next(errorUtil.prepError(err.message, err.statusCode));
 	}
 };
 
-// Saves the token in the database to be handled as blacklisted and removes it from cookie
 exports.logout = async (req, res, next) => {
 	const token = req.cookies.jwt_token;				
 
 	try{
+		// Black lists the token (adds it to the database blacklist collection) so no more requests can be done using 
+		// this token even if inside the 1h expiration date
 		const decoded = jwt.verify(token, process.env.JWT_SECRET);
 		const blt = new Blt({
 			token: token,
@@ -96,16 +97,16 @@ exports.logout = async (req, res, next) => {
 		});
 
 		await blt.save();
+
+		// Removes it from the cookie
 		res.clearCookie('jwt_token');
 		res.status(200).json({ message: 'Logged out successfully' });
 		next();
 	} catch(err) {
-		next(errorUtil.prepError(err.message, 500));
+		next(errorUtil.prepError(err.message, err.statusCode));
 	}
 };
 
-// Generates a token and saves it on the user model in the database with a expire data of 1h, and  sends a reset password email with that token
-// The frontend is going to create a form to get the new password
 exports.sendForgotPasswordEmail = async (req, res, next) =>{
 	const email = req.body.email;
 
@@ -113,12 +114,16 @@ exports.sendForgotPasswordEmail = async (req, res, next) =>{
 		const user = await User.findOne({ email: email });
 		if(!user) return next(errorUtil.prepError(`No account found with email = ${email}`, 404));
 
+		// Creates a random tooken
 		const token = crypto.randomBytes(32).toString('hex');
 
+		// Sets it in the user model with a expiration date too 
 		user.resetToken = token;
 		user.resetTokenExpiration = Date.now() + 3600 * 1000; 
 		await user.save();
 
+		// Creates an email with a link with that token for a frontend url page that would contain the reset form 
+		// Could have implmemented by sending and email with the password reset form
 		const msg = {
 			to: email,
 			from: process.env.EMAIL_SENDER,
@@ -128,27 +133,25 @@ exports.sendForgotPasswordEmail = async (req, res, next) =>{
 			<p>Click the link below to reset your password:</p>
 			<p><a href="${process.env.FRONTEND_URL}/reset/${token}">Reset your password!</a></p>
 			`,
-			// Ofc if this was a RESTAPI serving multiple clients i would want to server side render a html page with the form for password reset,
-			// So that all the reset password flow would stay contained in the api
 		}
-		await transport.sendMail(msg);
+		await transport.sendMail(msg); // Send the email in development it is catched by email trap 
 		res.status(200).json({ message: 'Reset password email sent.' });
 
 	}catch (err) {
-		next(errorUtil.prepError(err.message, 500));
+		next(errorUtil.prepError(err.message, err.statusCode));
 	}
 };
 
-// It gets the token sent by the client the one generated and inserted in the user model (database) and the new password, updating it
 exports.resetPassword = async (req, res, next) => {
 	const { password, confirmPassword, token } = req.body;
-
 	if(password !== confirmPassword) return next(errorUtil.prepError("Passwords don't match.", 401));
 	
 	try {
+		// Gets the user with that token and in which it hasnt expired
 		const user = await User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() }});
 		if(!user) return next(errorUtil.prepError(`Invalid or expired token.`, 400));
 
+		// Changes its password
 		const hashedPassword = await bcrypt.hash(password, 12);
 		user.password = hashedPassword;
 		user.resetToken = undefined;
@@ -157,6 +160,6 @@ exports.resetPassword = async (req, res, next) => {
 
 		res.status(200).json({ message: 'Password reset successfull!' });
 	}catch(err) {
-		next(errorUtil.prepError(err.message, 500));
+		next(errorUtil.prepError(err.message, err.statusCode));
 	}
 };

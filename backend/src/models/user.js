@@ -40,7 +40,7 @@ userSchema.methods.addToCart = async function(product, quantity) {
 
 	// If the quantity in the cart bigger than the stock for that product we throw error without saving
 	if(cartQuantity > product.stock){
-		throw errorUtil.prepError(`The product does not have that much stock!`, 400);
+		throw errorUtil.prepError(`The product does not have that much stock!`, 403);
 	}
 
 	try {

@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const { validationResult } = require('express-validator');
 
 const User = require('../models/user');
 const Blt = require('../models/blackListedToken');
@@ -21,8 +22,10 @@ var transport = nodemailer.createTransport({
 
 // Creates the user in the database
 exports.signup = async (req, res, next) => {
-	const { email, password, name, confirmPassword } = req.body;
-	if(password !== confirmPassword) return next(errorUtil.prepError("Passwords don't match.", 401));
+	const { email, password, name } = req.body;
+
+	const errors = validationResult(req);
+	if(!errors.isEmpty()) return res.status(400).json({ message: 'Validation failed. Check your input.', errors: errors.array() });
 
 	try {
 		const user = await User.findOne({ email: email });
@@ -44,12 +47,16 @@ exports.signup = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
 	const email = req.body.email;
+	const password = req.body.password;
+
+	const errors = validationResult(req);
+	if(!errors.isEmpty()) return res.status(400).json({ message: 'Validation failed. Check your input.', errors: errors.array() });
 
 	try{
 		const user = await User.findOne({ email: email });
 		if(!user) return next(errorUtil.prepError(`No account found with email = ${email}.`, 404));
 
-		const isEqual = await bcrypt.compare(req.body.password, user.password);
+		const isEqual = await bcrypt.compare(password, user.password);
 		if(!isEqual) return next(errorUtil.prepError('Wrong credentials.', 401));
 
 		// Creates the jwt token
@@ -110,6 +117,9 @@ exports.logout = async (req, res, next) => {
 exports.sendForgotPasswordEmail = async (req, res, next) =>{
 	const email = req.body.email;
 
+	const errors = validationResult(req);
+	if(!errors.isEmpty()) return res.status(400).json({ message: 'Validation failed. Check your input.', errors: errors.array() });
+
 	try {
 		const user = await User.findOne({ email: email });
 		if(!user) return next(errorUtil.prepError(`No account found with email = ${email}`, 404));
@@ -143,13 +153,15 @@ exports.sendForgotPasswordEmail = async (req, res, next) =>{
 };
 
 exports.resetPassword = async (req, res, next) => {
-	const { password, confirmPassword, token } = req.body;
-	if(password !== confirmPassword) return next(errorUtil.prepError("Passwords don't match.", 401));
+	const { password, token } = req.body;
+
+	const errors = validationResult(req);
+	if(!errors.isEmpty()) return res.status(400).json({ message: 'Validation failed. Check your input.', errors: errors.array() });
 	
 	try {
 		// Gets the user with that token and in which it hasnt expired
 		const user = await User.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() }});
-		if(!user) return next(errorUtil.prepError(`Invalid or expired token.`, 400));
+		if(!user) return next(errorUtil.prepError(`Invalid or expired token.`, 403));
 
 		// Changes its password
 		const hashedPassword = await bcrypt.hash(password, 12);

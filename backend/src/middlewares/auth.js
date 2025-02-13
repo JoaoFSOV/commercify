@@ -46,9 +46,11 @@ exports.cleanBlackListedTokens = async (req, res, next) => {
 // Checks if the logged in user is an admin
 exports.isAdmin = async (req, res, next) => {
 	const user = await User.findOne({ _id: req.userId });
-	req.isAdmin = (user.role === 'admin');
+	if(!user) return next(errorUtil.prepError('User not found.', 404));
 
 	// Only admin users should have access
+	req.isAdmin = (user.role === 'admin');
 	if(!req.isAdmin) return next(errorUtil.prepError('Not authorized', 401));
+
 	next();
 };

@@ -1,3 +1,5 @@
+const { validationResult } = require('express-validator');
+
 const { Product, Rating } = require('../models/product');
 const User = require('../models/user');
 const errorUtil = require('../util/error');
@@ -38,6 +40,9 @@ exports.rateProduct = async (req, res, next) => {
 	const prodId = req.params.prodId;
 	const rating = req.body.rating;
 	const userId = req.userId;
+
+	const errors = validationResult(req);
+	if(!errors.isEmpty()) return res.status(400).json({ message: 'Validation failed. Check your input.', errors: errors.array() });
 
 	try {
 		const product = await Product.findOne({ _id: prodId });
@@ -96,6 +101,9 @@ exports.addToCart = async (req, res, next) => {
 	const quantity = req.body.quantity;
 	const userId = req.userId;
 
+	const errors = validationResult(req);
+	if(!errors.isEmpty()) return res.status(400).json({ message: 'Validation failed. Check your input.', errors: errors.array() });
+
 	try {
 		const user = await User.findById(userId);
 		if(!user) return next(errorUtil.prepError(`No user found with id = ${userId}.`, 404));
@@ -116,6 +124,9 @@ exports.removeFromCart = async (req, res, next) => {
 	const prodId = req.params.prodId;
 	const quantity = req.body.quantity;
 	const userId = req.userId;
+
+	const errors = validationResult(req);
+	if(!errors.isEmpty()) return res.status(400).json({ message: 'Validation failed. Check your input.', errors: errors.array() });
 
 	try {
 		const user = await User.findById(userId);

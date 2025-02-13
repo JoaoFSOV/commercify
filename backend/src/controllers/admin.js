@@ -1,3 +1,5 @@
+const { validationResult } = require('express-validator');
+
 const { Product } = require('../models/product');
 const User = require('../models/user');
 const errorUtil = require('../util/error');
@@ -7,6 +9,10 @@ const ROLES_ENUM = ['customer', 'admin'];
 // Creates a product in the database with the data on the request body
 exports.createProduct = async (req, res, next) => {
 	const { name, price, description, type, brand, stock, discount, imageUrl } = req.body;
+
+	const errors = validationResult(req);
+	if(!errors.isEmpty()) return res.status(400).json({ message: 'Validation failed. Check your input.', errors: errors.array() });
+
 	const product = new Product({
 		name: name,
 		price: price,
@@ -29,6 +35,10 @@ exports.createProduct = async (req, res, next) => {
 // Updates a product in the database with the data in the request body
 exports.editProduct = async (req, res, next) => {
 	const prodId = req.params.prodId;
+	const { name, price, description, type, brand, stock, discount, imageUrl } = req.body;
+
+	const errors = validationResult(req);
+	if(!errors.isEmpty()) return res.status(400).json({ message: 'Validation failed. Check your input.', errors: errors.array() });
 
 	try {
 		const product = await Product.findById(prodId);
@@ -36,13 +46,14 @@ exports.editProduct = async (req, res, next) => {
 			return next(errorUtil.prepError(`No product found with id = ${prodId}.`, 404));
 		}
 
-		product.name = req.body.name ?? product.name;
-		product.price = req.body.price ?? product.price;
-		product.description = req.body.description ?? product.description;
-		product.type = req.body.type ?? product.type;
-		product.brand = req.body.brand ?? product.brand;
-		product.stock = req.body.stock ?? product.stock;
-		product.discount = req.body.discount ?? product.discount;
+		product.name = name ?? product.name;
+		product.price = price ?? product.price;
+		product.description = description ?? product.description;
+		product.type = type ?? product.type;
+		product.brand = brand ?? product.brand;
+		product.stock = stock ?? product.stock;
+		product.discount = discount ?? product.discount;
+		product.imageUrl = imageUrl ?? product.imageUrl;
 
 		const result = await product.save();
 		res.status(200).json({ message: 'Product updated!', product: result });
@@ -81,7 +92,7 @@ exports.promote = async (req, res, next) => {
 			return res.status(200).json({ message: `User is now ${user.role}.`});
 		}
 
-		return next(errorUtil.prepError("Can't promote that user anymore.", 400));
+		return next(errorUtil.prepError("Can't promote that user anymore.", 403));
 	}catch(err) {
 		next(errorUtil.prepError(err.message, err.statusCode));
 	}

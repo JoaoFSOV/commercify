@@ -35,4 +35,13 @@ router.delete('/remove-from-cart/:prodId',
 	], 
 	costumerController.removeFromCart);
 
+// localhost:<port>/orders => GET
+router.get('/orders', costumerController.getUserOrders);
+
+// localhost:<port>/checkout => GET
+router.get('/checkout', costumerController.checkout);
+
+// localhost:<port>/checkout/success => GET
+router.get('/checkout/success', costumerController.getCheckoutSuccess);
+
 module.exports = router;

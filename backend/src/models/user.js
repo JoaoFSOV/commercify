@@ -61,14 +61,19 @@ userSchema.methods.calculateTotalPrice = async function() {
 		for (const p of this.cart.products) {
 			const product = await Product.findById(p.prodId);
 			if (product) {
-				totalPrice += parseFloat(p.quantity * product.finalPrice).toFixed(2);
+				totalPrice += p.quantity * product.finalPrice;
 			}
 		}
 	}catch(err) {
 		throw errorUtil.prepError(err.message, 500);
 	}
 
-	this.cart.totalPrice = totalPrice;
+	this.cart.totalPrice = Number(totalPrice.toFixed(2));
+};
+
+userSchema.methods.clearCart = async function() {
+	this.cart = { products: [], totalPrice: 0 };
+	return this.save();
 };
 
 // When toJSON() method is called it should include the virtuals

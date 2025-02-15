@@ -11,7 +11,7 @@ exports.authenticate = async (req, res, next) => {
 	// !Get method routes that should be public to non authenticated user
 	const publicRoutes = ['/login', '/signup', '/forgot', '/reset'];
 	// Get routes that should require authentication
-	const privateGetRoutes = ['/me', '/cart'];
+	const privateGetRoutes = ['/me', '/cart', '/checkout', '/checkout/success', '/orders'];
 	if(publicRoutes.includes(req.path) || (req.method === 'GET' && !privateGetRoutes.includes(req.path))) {
 		return next();
 	}

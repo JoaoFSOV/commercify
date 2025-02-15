@@ -46,10 +46,11 @@ The backend for Commercify is built with Node.js and Express.js, using MongoDB a
 | DELETE  | `/remove-from-cart` | Remove product from user's cart | ✅ Yes       |
 
 💳 Orders
-| Method | Endpoint     | Description                  | Auth Required |
-|--------|-------------|------------------------------|--------------|
-| POST   | `/checkout` | Create an order (checkout)   | ✅ Yes       |
-| GET    | `/orders`   | Get all user orders          | ✅ Yes       |
+| Method | Endpoint            | Description                                 | Auth Required |
+|--------|---------------------|---------------------------------------------|--------------|
+| GET    | `/checkout`         | Redirects to stripe payment page            | ✅ Yes       |
+| GET    | `/checkout/success` | Clears user cart, creates and saves order   | ✅ Yes       |
+| GET    | `/orders`           | Get all user orders                         | ✅ Yes       |
 
 
 ## 🛡️ Security Measures
@@ -78,6 +79,7 @@ Configure the following environment variables either in a `.env` file or by addi
 - NODE_ENV=your_env  # production or development
 - EMAIL_SENDER=your_email
 - FRONTEND_URL=your_frontend_url
+- STRIPE_KEY=your_stripe_key
 
 ### Or adding them to the start script in `package.json`:
 

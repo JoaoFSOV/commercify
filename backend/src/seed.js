@@ -66,6 +66,58 @@ async function seedDatabase() {
 				nRatings: 2,
 				slug: 'running-shoes',
 				imageUrl: 'https://assets.ajio.com/medias/sys_master/root/20240516/dxrK/6645c59505ac7d77bb611ce6/-473Wx593H-466410362-grey-MODEL.jpg'
+			},
+			{
+				name: 'Rubber Duck',
+				price: 0.90,
+				discount: 0,
+				description: 'Companion for long bads and coding sessions.',
+				type: 'tech',
+				brand: 'Duck4You',
+				stock: 25,
+				averageRating: 0,
+				nRatings: 0,
+				slug: 'rubber-duck',
+				imageUrl: 'https://www.thesoapopera.com/cdn/shop/products/The-Soap-Opera-Rubber-Ducks-Colors-Yellow_02cd30bb-0dbd-4fdc-8d7c-6ee1be5a04e8_800x.jpg?v=1613344659'
+			},
+			{
+				name: 'Viagem ao centro da terra',
+				price: 12,
+				discount: 10,
+				description: 'Great Júlio Vernes fantasy book.',
+				type: 'tech',
+				brand: 'bertra',
+				stock: 20,
+				averageRating: 0,
+				nRatings: 0,
+				slug: 'viagem-ao-centro-da-terra',
+				imageUrl: 'https://cdn.pixabay.com/photo/2015/11/19/21/10/glasses-1052010_640.jpg'
+			},
+			{
+				name: 'Champions League Football',
+				price: 120,
+				discount: 0,
+				description: 'Ball kicked by Ronaldo in the champions league finals of 2019',
+				type: 'tech',
+				brand: 'FIFA',
+				stock: 1,
+				averageRating: 0,
+				nRatings: 0,
+				slug: 'champions-league-football',
+				imageUrl: 'https://images.indianexpress.com/2024/03/CHAMPIONS-LEAGUE-FINAL-BALL.jpg'
+			},
+			{
+				name: 'Table for computer setup',
+				price: 250,
+				discount: 0,
+				description: 'It raises and lowers to be at the perfet height.',
+				type: 'tech',
+				brand: 'Table4You',
+				stock: 10,
+				averageRating: 0,
+				nRatings: 0,
+				slug: 'table-for-computer-setup',
+				imageUrl: 'https://images.e2go.biz/ImageHandler.ashx?src=OFSC/UKA559_CH_BLK_622.jpg&width=622&height=350'
 			}
 		]);
 		console.log('Products seeded');

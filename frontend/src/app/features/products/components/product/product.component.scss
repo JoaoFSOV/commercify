@@ -39,6 +39,11 @@
   font-weight: 600;
   margin: 5px 0 10px;
   color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  display: block;
 }
 
 .rating-container {

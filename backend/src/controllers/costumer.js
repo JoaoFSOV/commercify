@@ -13,7 +13,7 @@ exports.getProducts = async (req, res, next) => {
 
 	let products = [];
 	try {
-		const amount = await Product.find().countDocuments();
+		let amount = await Product.find().countDocuments();
 		if(amount === 0) return next(errorUtil.prepError('No products found.', 404));
 		if(amount > limit) amount = limit;
 
@@ -179,6 +179,8 @@ exports.checkout = async (req, res, next) => {
 	try {
 		const user = await User.findById(userId).populate('cart.products.prodId');
 		if(!user) return next(errorUtil.prepError(`No user found with id = ${userId}.`, 404));
+
+		if(user.cart.products.length === 0) return next(errorUtil.prepError(`Can't checkout with empty cart.`, 404));
 
 		// Creating the stripe checkout session's line_items attribute
 		const line_items = user.cart.products.map(p => ({
